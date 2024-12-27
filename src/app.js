@@ -4,13 +4,11 @@ const User = require('./models/User');
 
 const app = express();
 
+// Middleware to parses incoming requests with JSON payloads and makes the parsed data available in req.body
+app.use(express.json());
+
 app.post('/signup', async (req, res) => {
-  const user = new User({
-    firstName: 'Anand',
-    lastName: 'P',
-    email: 'anandp@gmail.com',
-    password: 'Anand@123',
-  });
+  const user = new User(req.body);
 
   try {
     await user.save();
