@@ -1,136 +1,69 @@
 import express from 'express';
 import connectDB from './config/database.js';
-import User from './models/User.js';
-import validator from 'validator';
-import { validateSignUpData } from './utils/validation.js';
-import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
-import { userAuth } from './middlewares/auth.middleware.js';
+import authRoutes from './routes/auth.route.js';
+import profileRoutes from './routes/profile.route.js';
+import requestRoutes from './routes/request.router.js';
 
 const app = express();
 
 // Middleware to parses incoming requests with JSON payloads and makes the parsed data available in req.body
 app.use(express.json());
-
 // Middleware to parse cookies and make them accessible via req.cookies
 app.use(cookieParser());
 
-app.post('/signup', async (req, res) => {
-  try {
-    const { firstName, lastName, emailId, password } = req.body;
+// app.get('/feed', async (req, res) => {
+//   try {
+//     const users = await User.find({});
+//     if (users.length === 0) {
+//       res.send('No users available !');
+//     }
+//     res.status(200).send(users);
+//   } catch {
+//     res.send('Error in /feed api ');
+//   }
+// });
 
-    validateSignUpData(req);
+// app.patch('/user', async (req, res) => {
+//   const userId = req.body.userId;
+//   const data = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+//   try {
+//     const ALLOWED_UPDATES = [
+//       'userId',
+//       'photoUrl',
+//       'about',
+//       'gender',
+//       'age',
+//       'skills',
+//     ];
+//     const isUpdateAllowed = Object.keys(data).every((k) =>
+//       ALLOWED_UPDATES.includes(k)
+//     );
+//     if (!isUpdateAllowed) {
+//       throw new Error('Update not allowed !');
+//     }
 
-    const existingUserByEmail = await User.findOne({
-      emailId: req.body.emailId,
-    });
-    if (existingUserByEmail) {
-      return res.status(400).send('Email Id already exists, Please login !');
-    }
+//     if (data?.skills.length > 10) {
+//       throw new Error('Skills cannot be more than 10');
+//     }
 
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: hashedPassword,
-    });
-    await user.save();
-    return res.status(201).send('User added successfully !');
-  } catch (err) {
-    return res.status(400).send(`ERROR : ${err.message}`);
-  }
-});
+//     const user = await User.findByIdAndUpdate(userId, data, {
+//       returnDocument: 'after', // Will give the updated document
+//       runValidators: true,
+//     });
 
-app.post('/login', async (req, res) => {
-  try {
-    const { emailId, password } = req.body;
+//     console.log(user);
+//     res.send('User updated successfully');
+//   } catch (err) {
+//     console.error(err); // Log the error for debugging.
+//     res.status(400).send('Error in updating user');
+//   }
+// });
 
-    if (!validator.isEmail(emailId)) {
-      throw new Error('Invalid credentials !');
-    }
-    const user = await User.findOne({ emailId: emailId });
-    if (!user) {
-      throw new Error('Invalid credentials !');
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (isPasswordValid) {
-      const token = await user.getJWT();
-      res.cookie('token', token, { maxAge: 15 * 24 * 60 * 60 * 1000 });
-      return res.status(200).send('Login success !');
-    } else {
-      throw new Error('Invalid credentials !');
-    }
-  } catch (err) {
-    return res.status(400).send(`ERROR : ${err.message}`);
-  }
-});
-
-app.post('/sendConnectionRequest', userAuth, async (req, res) => {
-  const user = req.user;
-  console.log('Sending connection request');
-  res.status(200).send(user.firstName + ' sent connection request !');
-});
-
-app.get('/profile', userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-    res.send(user);
-  } catch (err) {
-    return res.status(400).send(`ERROR : ${err.message}`);
-  }
-});
-
-app.get('/feed', async (req, res) => {
-  try {
-    const users = await User.find({});
-    if (users.length === 0) {
-      res.send('No users available !');
-    }
-    res.status(200).send(users);
-  } catch {
-    res.send('Error in /feed api ');
-  }
-});
-
-app.patch('/user', async (req, res) => {
-  const userId = req.body.userId;
-  const data = req.body;
-
-  try {
-    const ALLOWED_UPDATES = [
-      'userId',
-      'photoUrl',
-      'about',
-      'gender',
-      'age',
-      'skills',
-    ];
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      ALLOWED_UPDATES.includes(k)
-    );
-    if (!isUpdateAllowed) {
-      throw new Error('Update not allowed !');
-    }
-
-    if (data?.skills.length > 10) {
-      throw new Error('Skills cannot be more than 10');
-    }
-
-    const user = await User.findByIdAndUpdate(userId, data, {
-      returnDocument: 'after', // Will give the updated document
-      runValidators: true,
-    });
-
-    console.log(user);
-    res.send('User updated successfully');
-  } catch (err) {
-    console.error(err); // Log the error for debugging.
-    res.status(400).send('Error in updating user');
-  }
-});
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
+app.use('/request', requestRoutes);
 
 connectDB()
   .then(() => {
