@@ -6,6 +6,7 @@ import { validateSignUpData } from './utils/validation.js';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
+import { userAuth } from './middlewares/auth.middleware.js';
 
 const app = express();
 
@@ -67,18 +68,9 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.get('/profile', async (req, res) => {
+app.get('/profile', userAuth, async (req, res) => {
   try {
-    const cookies = req.cookies;
-    const { token } = cookies;
-    if (!token) {
-      throw new Error('Invalid Token !');
-    }
-    const decodedMessage = await jwt.verify(token, 'jwt secret secret key');
-    const user = await User.findById(decodedMessage._id);
-    if (!user) {
-      throw new Error('User does not exist !');
-    }
+    const user = req.user;
     res.send(user);
   } catch (err) {
     return res.status(400).send(`ERROR : ${err.message}`);
