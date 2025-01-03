@@ -57,8 +57,8 @@ app.post('/login', async (req, res) => {
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
-      const token = await jwt.sign({ _id: user._id }, 'jwt secret secret key');
-      res.cookie('token', token);
+      const token = await user.getJWT();
+      res.cookie('token', token, { maxAge: 15 * 24 * 60 * 60 * 1000 });
       return res.status(200).send('Login success !');
     } else {
       throw new Error('Invalid credentials !');
@@ -66,6 +66,12 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     return res.status(400).send(`ERROR : ${err.message}`);
   }
+});
+
+app.post('/sendConnectionRequest', userAuth, async (req, res) => {
+  const user = req.user;
+  console.log('Sending connection request');
+  res.status(200).send(user.firstName + ' sent connection request !');
 });
 
 app.get('/profile', userAuth, async (req, res) => {
@@ -80,7 +86,7 @@ app.get('/profile', userAuth, async (req, res) => {
 app.get('/feed', async (req, res) => {
   try {
     const users = await User.find({});
-    if (!users) {
+    if (users.length === 0) {
       res.send('No users available !');
     }
     res.status(200).send(users);
