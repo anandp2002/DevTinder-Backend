@@ -35,8 +35,15 @@ export const connections = async (req, res) => {
         { fromUserId: loggedInUser._id, status: 'accepted' },
         { toUserId: loggedInUser._id, status: 'accepted' },
       ],
-    }).populate('fromUserId', USER_SAFE_DATA);
-    const data = connections.map((row) => row.fromUserId);
+    })
+      .populate('fromUserId', USER_SAFE_DATA)
+      .populate('toUserId', USER_SAFE_DATA);
+    const data = connections.map((row) => {
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
+        return row.toUserId;
+      }
+      return row.fromUserId;
+    });
 
     return res.status(200).json({ data: data });
   } catch (err) {
