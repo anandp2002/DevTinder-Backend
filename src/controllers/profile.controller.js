@@ -82,9 +82,9 @@ export const password = async (req, res) => {
     user.password = hashedPassword;
     await user.save();
 
-    res.status(200).send('Password updated successfully.');
+    res.status(200).send('Password updated successfully !');
   } catch (err) {
     console.error('Error updating password:', err);
-    res.status(500).send('Internal server error.');
+    res.status(500).send('Internal server error !');
   }
 };
