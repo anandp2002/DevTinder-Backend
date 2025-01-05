@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.route.js';
 import profileRoutes from './routes/profile.route.js';
 import requestRoutes from './routes/request.router.js';
+import userRoutes from './routes/user.route.js';
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/request', requestRoutes);
+app.use('/user', userRoutes);
 
 connectDB()
   .then(() => {
