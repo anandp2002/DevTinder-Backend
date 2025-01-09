@@ -1,14 +1,7 @@
 import ConnectionRequest from '../models/connectionRequest.js';
+import User from '../models/User.js';
 
-const USER_SAFE_DATA = [
-  'firstName',
-  'lastName',
-  'photoUrl',
-  'age',
-  'gender',
-  'about',
-  'skills',
-];
+const USER_SAFE_DATA = 'firstName lastName photoUrl age gender about skills';
 
 // Get all the pending connection requests for the logged in user
 export const requests = async (req, res) => {
@@ -48,5 +41,30 @@ export const connections = async (req, res) => {
     return res.status(200).json({ data: data });
   } catch (err) {
     return res.status(400).send('ERROR : ' + err.message);
+  }
+};
+
+export const userFeed = async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select('fromUserId toUserId');
+
+    const hideUsersFromFeed = new Set();
+    connectionRequests.forEach((req) => {
+      hideUsersFromFeed.add(req.fromUserId.toString());
+      hideUsersFromFeed.add(req.toUserId.toString());
+    });
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(hideUsersFromFeed) } },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    }).select(USER_SAFE_DATA);
+
+    res.send(users);
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
   }
 };
