@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
     photoUrl: {
       type: String,
       default:
-        'https://media.istockphoto.com/id/1305665241/vector/anonymous-gender-neutral-face-avatar-incognito-head-silhouette-stock-illustration.jpg?s=612x612&w=0&k=20&c=qA6GUTalFyrBCRVUzQgp2B5zODxmOA4NXTBcw9notYY=',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/340px-Default_pfp.svg.png',
 
       validate(url) {
         if (!validator.isURL(url)) {
