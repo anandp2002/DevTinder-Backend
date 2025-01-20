@@ -5,8 +5,17 @@ import authRoutes from './routes/auth.route.js';
 import profileRoutes from './routes/profile.route.js';
 import requestRoutes from './routes/request.router.js';
 import userRoutes from './routes/user.route.js';
+import cors from 'cors';
 
 const app = express();
+
+// To avoid CORS error
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
 // Middleware to parses incoming requests with JSON payloads and makes the parsed data available in req.body
 app.use(express.json());

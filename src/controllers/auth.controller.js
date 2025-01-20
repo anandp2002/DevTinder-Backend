@@ -44,7 +44,7 @@ export const login = async (req, res) => {
     if (isPasswordValid) {
       const token = await user.getJWT();
       res.cookie('token', token, { maxAge: 15 * 24 * 60 * 60 * 1000 });
-      return res.status(200).send('Login success !');
+      return res.status(200).send(user);
     } else {
       throw new Error('Invalid credentials !');
     }
