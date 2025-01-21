@@ -12,64 +12,17 @@ const app = express();
 // To avoid CORS error
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://192.168.1.3:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   })
 );
 
 // Middleware to parses incoming requests with JSON payloads and makes the parsed data available in req.body
 app.use(express.json());
+
 // Middleware to parse cookies and make them accessible via req.cookies
 app.use(cookieParser());
-
-// app.get('/feed', async (req, res) => {
-//   try {
-//     const users = await User.find({});
-//     if (users.length === 0) {
-//       res.send('No users available !');
-//     }
-//     res.status(200).send(users);
-//   } catch {
-//     res.send('Error in /feed api ');
-//   }
-// });
-
-// app.patch('/user', async (req, res) => {
-//   const userId = req.body.userId;
-//   const data = req.body;
-
-//   try {
-//     const ALLOWED_UPDATES = [
-//       'userId',
-//       'photoUrl',
-//       'about',
-//       'gender',
-//       'age',
-//       'skills',
-//     ];
-//     const isUpdateAllowed = Object.keys(data).every((k) =>
-//       ALLOWED_UPDATES.includes(k)
-//     );
-//     if (!isUpdateAllowed) {
-//       throw new Error('Update not allowed !');
-//     }
-
-//     if (data?.skills.length > 10) {
-//       throw new Error('Skills cannot be more than 10');
-//     }
-
-//     const user = await User.findByIdAndUpdate(userId, data, {
-//       returnDocument: 'after', // Will give the updated document
-//       runValidators: true,
-//     });
-
-//     console.log(user);
-//     res.send('User updated successfully');
-//   } catch (err) {
-//     console.error(err); // Log the error for debugging.
-//     res.status(400).send('Error in updating user');
-//   }
-// });
 
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);

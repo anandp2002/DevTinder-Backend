@@ -5,7 +5,7 @@ export const protectRoute = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      throw new Error('Invalid Token !');
+      return res.status(401).send('Please Login !');
     }
     const decodedMessage = await jwt.verify(token, 'jwt secret secret key');
     const user = await User.findById(decodedMessage._id);
