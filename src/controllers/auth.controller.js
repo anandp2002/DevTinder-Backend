@@ -22,8 +22,13 @@ export const signup = async (req, res) => {
       emailId,
       password: hashedPassword,
     });
-    await user.save();
-    return res.status(201).send('User added successfully !');
+
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    res.cookie('token', token, { maxAge: 15 * 24 * 60 * 60 * 1000 });
+    return res
+      .status(201)
+      .json({ message: 'User added successfully !', data: savedUser });
   } catch (err) {
     return res.status(400).send(`ERROR : ${err.message}`);
   }

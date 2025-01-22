@@ -12,7 +12,7 @@ const app = express();
 // To avoid CORS error
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://192.168.1.3:5173'],
+    origin: ['http://localhost:5174', 'http://192.168.1.3:5174'],
     credentials: true,
   })
 );
@@ -35,6 +35,6 @@ connectDB()
       console.log('Server is listening on port 3000...');
     });
   })
-  .catch(() => {
-    console.log('Error while connecting to DB !');
+  .catch((err) => {
+    console.log('Error while connecting to DB : ' + err.message);
   });
