@@ -7,7 +7,7 @@ export const protectRoute = async (req, res, next) => {
     if (!token) {
       return res.status(401).send('Please Login !');
     }
-    const decodedMessage = await jwt.verify(token, 'jwt secret secret key');
+    const decodedMessage = await jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decodedMessage._id);
     if (!user) {
       throw new Error('User does not exist !');
