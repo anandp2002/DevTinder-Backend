@@ -15,11 +15,7 @@ const app = express();
 // To avoid CORS error
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'http://192.168.1.2:5173',
-      'http://192.168.191.74:5173',
-    ],
+    origin: ['http://localhost', 'http://192.168.1.2', 'http://192.168.191.74'],
     credentials: true,
   })
 );
