@@ -15,7 +15,12 @@ const app = express();
 // To avoid CORS error
 app.use(
   cors({
-    origin: ['http://localhost', 'http://192.168.1.2', 'http://192.168.191.74'],
+    origin: [
+      'http://localhost',
+      'http://192.168.1.2',
+      'http://192.168.191.74',
+      'https://devtinder-git-main-anandpamegozegmailcoms-projects.vercel.app',
+    ],
     credentials: true,
   })
 );
