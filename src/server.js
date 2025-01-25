@@ -19,7 +19,7 @@ app.use(
       'http://localhost',
       'http://192.168.1.2',
       'http://192.168.191.74',
-      'https://devtinderanandp.vercel.app',
+      'https://devtinder-backend-kna9.onrender.com',
     ],
     credentials: true,
   })
