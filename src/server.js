@@ -19,7 +19,7 @@ app.use(
       'http://localhost',
       'http://192.168.1.2',
       'http://192.168.191.74',
-      'https://devtinder-git-main-anandpamegozegmailcoms-projects.vercel.app',
+      'https://devtinderanandp.vercel.app',
     ],
     credentials: true,
   })
