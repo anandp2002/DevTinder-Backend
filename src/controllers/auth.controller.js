@@ -25,7 +25,10 @@ export const signup = async (req, res) => {
 
     const savedUser = await user.save();
     const token = await savedUser.getJWT();
-    res.cookie('token', token, { maxAge: 15 * 24 * 60 * 60 * 1000 });
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+    });
     return res
       .status(201)
       .json({ message: 'User added successfully !', data: savedUser });
@@ -48,7 +51,10 @@ export const login = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
       const token = await user.getJWT();
-      res.cookie('token', token, { maxAge: 15 * 24 * 60 * 60 * 1000 });
+      res.cookie('token', token, {
+        httpOnly: true,
+        maxAge: 15 * 24 * 60 * 60 * 1000,
+      });
       return res.status(200).send(user);
     } else {
       throw new Error('Invalid credentials !');
