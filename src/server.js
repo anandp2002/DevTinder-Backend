@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       'http://localhost',
-      'http://192.168.1.7:5173',
+      'http://192.168.1.7:3000',
       'http://192.168.191.74',
       'https://devtinderanandp.vercel.app',
     ],
