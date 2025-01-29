@@ -19,7 +19,7 @@ app.use(
       'http://localhost',
       'http://192.168.1.7:3000',
       'http://192.168.191.74',
-      'https://devtinderanandp.vercel.app',
+      'https://devtinderanandp.vercel.app:3000',
     ],
     credentials: true,
   })
